@@ -429,6 +429,20 @@ void draw_axes()
 }
 
 /*-------------------------------------------------------
+ * Procedure to draw a polygon as a blade of the windmill
+ */
+void draw_blade()
+{
+  glBegin(GL_POLYGON);
+    glVertex3f(0.0, 0.0, 0.0);
+    glVertex3f(1.0, 4.0, 0.0);
+    glVertex3f(1.0, 8.0, 0.0);
+    glVertex3f(-1.0, 8.0, 0.0);
+    glVertex3f(-1.0, 4.0, 0.0);
+  glEnd();
+}
+
+/*-------------------------------------------------------
  * Make viewing matrix
  */
 void make_view(int x)
@@ -777,7 +791,8 @@ void draw_scene()
     glPushMatrix();
     glTranslatef(20, 0, 20);
     glScalef(10, 35, 10);
-    draw_ob();
+    draw_cube();
+    //draw_ob();
     glPopMatrix();
     glTranslatef(0, 0, 0);
     //-------------------
@@ -785,10 +800,15 @@ void draw_scene()
     //-------------------
     /*------- Draw the robot ----------*/
     //body
-    glTranslatef(loc_x, loc_y, loc_z);
+    /*glTranslatef(loc_x, loc_y, loc_z);
     glRotatef(face_ang, 0, 1, 0);
     glRotatef(body_ang, 1, 0, 0);
-    glPushMatrix();
+    glPushMatrix();*/
+
+    glTranslatef(position[0], position[1]+5.5, position[2]); 
+    glRotatef(face_ang, 0.0, 1.0, 0.0);
+    glPushMatrix();              /* Save M1 coord. sys */
+    
     glDisable(GL_LIGHTING);
     glDisable(GL_CULL_FACE);
     glTranslatef(lit2_position[0], lit2_position[1], lit2_position[2]);
@@ -817,148 +837,128 @@ void draw_scene()
     glLightfv(GL_LIGHT3, GL_POSITION, lit3_position);
     glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, lit3_direction);
     //----------------------
-    glPushMatrix();
+    /*glPushMatrix();
     glScalef(3.0, 4.0, 3.0);
     draw_cube();
-    glPopMatrix();
-    //arm1
-    glTranslatef(-0.5, 3.0, 1.5);
-    glPushMatrix();
-    if (isKneeDown || isJump)glRotatef(limb_ang * -1, 1, 0, 0);
-    else glRotatef(limb_ang, 1, 0, 0);
-    glPushMatrix();
-    draw_sphere();
-    glPopMatrix();
-    glPushMatrix();
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glColor3f(0.3, 0.9, 0.9);
-    draw_cylinder(0.5, 0.5, 2);
-    glPopMatrix();
-    glTranslatef(0.0, -2, 0);
-    glRotatef(small_limb_ang, 1, 0, 0);
-    glPushMatrix();
-    glPushMatrix();
-    glScalef(0.8, 0.8, 0.8);
-    draw_sphere();
-    glPopMatrix();
-    glPushMatrix();
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glColor3f(0.3, 0.9, 0.9);
-    draw_cylinder(0.5, 0.5, 2);
-    glPopMatrix();
-    glPopMatrix();
+    glPopMatrix();*/
+
+    glPushMatrix();              /* Save M1 coord. sys */
+    glScalef(17.0, 10.0, 12.0);    /* Scale up the axes */
+    draw_cube();
+    glPopMatrix();               /* Get M1 back */
+
+    /*-------Draw the front wheels -----*/
+    glColor3f(1.0, 0.0, 0.0);
+    glPushMatrix();              /* Save M1 coord. sys */
+    glTranslatef(3.0, -2.0, 3.0); /* Go to left wheel position */
+    glutSolidTorus(1.0,  /* inner radius */
+                   2.0,  /* outer radius */
+                   24,   /* divided into 18 segments */
+                   12);  /* 12 rings */
     glPopMatrix();
 
-    //arm2
-    glTranslatef(4, 0, 0);
-    glPushMatrix();
-    glRotatef(limb_ang * -1, 1, 0, 0);
-    glPushMatrix();
-    draw_sphere();
-    glPopMatrix();
-    glPushMatrix();
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glColor3f(0.3, 0.9, 0.9);
-    draw_cylinder(0.5, 0.5, 2);
-    glPopMatrix();
-    glTranslatef(0.0, -2, 0);
-    glRotatef(small_limb_ang, 1, 0, 0);
-    glPushMatrix();
-    glPushMatrix();
-    glScalef(0.8, 0.8, 0.8);
-    draw_sphere();
-    glPopMatrix();
-    glPushMatrix();
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glColor3f(0.3, 0.9, 0.9);
-    draw_cylinder(0.5, 0.5, 2);
-    glPopMatrix();
-    glPopMatrix();
+    glPushMatrix();              /* Save M1 coord. sys */
+    glTranslatef(3.0, -2.0, 9.0);/* Go to right wheel position */
+    glutSolidTorus(1.0,  /* inner radius */
+                   2.0,  /* outer radius */
+                   24,   /* divided into 18 segments */
+                   12);  /* 12 rings */
     glPopMatrix();
 
-    //leg1
-    glTranslatef(-3, -3, 0);
-    glPushMatrix();
-    glRotatef(limb_ang * -1, 1, 0, 0);
-    glPushMatrix();
-    draw_sphere();
-    glPopMatrix();
-    glPushMatrix();
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glColor3f(0.9, 0.3, 0.9);
-    draw_cylinder(0.5, 0.5, 2);
-    glPopMatrix();
-    glTranslatef(0.0, -2, 0);
-    glPushMatrix();
-    glScalef(0.8, 0.8, 0.8);
-    draw_sphere();
-    glPopMatrix();
-    glPushMatrix();
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glRotatef(small_limb_ang * -1, 1, 0, 0);
-    glColor3f(0.9, 0.3, 0.9);
-    draw_cylinder(0.5, 0.5, 2);
-    glPopMatrix();
+    /*------Draw back wheels ----*/
+    glColor3f(1.0, 0.4, 0.0);
+    glPushMatrix();              /* Save M1 coord. sys */
+    glTranslatef(14.0, -2.0, 3.0); /* Go to left wheel position */
+    glutSolidTorus(1.0,  /* inner radius */
+                   2.0,  /* outer radius */
+                   24,   /* divided into 18 segments */
+                   12);  /* 12 rings */
     glPopMatrix();
 
-    //leg2
-    glTranslatef(2, 0, 0);
-    glPushMatrix();
-    //if (!isDance) {
-    if (isKneeDown || isJump)glRotatef(limb_ang * -1, 1, 0, 0);
-    //else if(isDance)glRotatef(limb_ang * -1, 1, 0, 0);
-    else glRotatef(limb_ang, 1, 0, 0);
-    //}
-    glPushMatrix();
-    draw_sphere();
+    glPushMatrix();              /* Save M1 coord. sys */
+    glTranslatef(14.0, -2.0, 9.0);/* Go to right wheel position */
+    glutSolidTorus(1.0,  /* inner radius */
+                   2.0,  /* outer radius */
+                   24,   /* divided into 18 segments */
+                   12);  /* 12 rings */
     glPopMatrix();
+
+    
+    /*---- Draw forearm of the windmill ---*/
+    if(cylind==NULL){               /* allocate a quadric object, if necessary */
+        cylind = gluNewQuadric();
+        gluQuadricDrawStyle(cylind, GLU_FILL);
+        gluQuadricNormals(cylind, GLU_SMOOTH);
+    }   
+    if(sphere==NULL){
+        sphere = gluNewQuadric();
+        gluQuadricDrawStyle(sphere, GLU_FILL);
+    }
     glPushMatrix();
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glColor3f(0.9, 0.3, 0.9);
-    draw_cylinder(0.5, 0.5, 2);
+    glTranslatef(8.5, 10.0, 6.0);
+
+    glRotatef(-90,1.0,0.0,0.0);
+    glColor3f(0.68, 0.68, 0.68);
+    gluCylinder(cylind, 1.0, 1.0, 4.0, 12, 3);
+
+    glTranslatef(0.0, 0.0, 5.0); /* goto end of forearm, M4 coord. sys. */
+    glColor3f(0.2, 0.2, 0.95);
+    gluSphere(sphere, 1.5,   /* radius=1.5 */
+            12,            /* composing of 12 slices*/
+            12);           /* composing of 12 stacks */
+    /*------Draw three blades ---*/
+    glColor3f(1.0, 1.0, 1.0);
+    
+    glRotatef(bld_ang, 0.0, 0.0, 1.0);  /* Rotate about x axis, M5 coord. sys. */
+    glRotatef(5, 1.0, 0.0, 0.0);
+    glScalef(1.1,1.2,1.5);
+    draw_blade();/* draw the first blade */
+    
+    glRotatef(90.0, 0.0, 0.0, 1.0);    /* rotate by 90 degree, M6 coord. sys */
+    glRotatef(5, 1.0, 0.0, 0.0);
+    glScalef(1.1,1.2,1.5);
+    draw_blade();/* draw 2nd blade */
+    
+    glRotatef(90.0, 0.0, 0.0, 1.0);    /* rotate by 90 degree,M7 coord. sys */
+    glRotatef(5, 1.0, 0.0, 0.0);
+    glScalef(1.1,1.2,1.5);
+    draw_blade();/* draw 3rd blade */
+
+    glRotatef(90.0, 0.0, 0.0, 1.0);    /* rotate by 90 degree,M7 coord. sys */
+    glRotatef(5, 1.0, 0.0, 0.0);
+    glScalef(1.1,1.2,1.5);
+    draw_blade();/* draw 4rd blade */
     glPopMatrix();
-    glTranslatef(0.0, -2, 0);
+
     glPushMatrix();
-    glScalef(0.8, 0.8, 0.8);
-    draw_sphere();
-    glPopMatrix();
-    glPushMatrix();
-    glRotatef(90.0, 1.0, 0.0, 0.0);
-    glRotatef(small_limb_ang * -1, 1, 0, 0);
-    glColor3f(0.9, 0.3, 0.9);
-    draw_cylinder(0.5, 0.5, 2);
-    glPopMatrix();
-    glPopMatrix();
-    //head
-    glTranslatef(-1.5, 4, 0);
-    glPushMatrix();
-    glRotatef(body_ang, 0, 1, 0);
+    glTranslatef(17.0, 3.0, 3.0);
+    glScalef(10,3,3);
     draw_cube();
     glPopMatrix();
 
-    if (isFly) {
-        glPushMatrix();
-        glTranslatef(1, -2, -1.5);
-        glPushMatrix();
-        glRotatef(fly_ang * -1, 0, 1, 0);
-        glTranslatef(0, 0, -2);
-        glPushMatrix();
-        glScalef(0.2, 5, 1.5);
-        draw_fly();
-        glPopMatrix();
-        glPopMatrix();
-        glTranslatef(-1, 0, 0);
-        //draw_sphere();
-        glPushMatrix();
-        glRotatef(fly_ang, 0, 1, 0);
-        glTranslatef(0, 0, -2);
-        glPushMatrix();
-        glScalef(0.2, 5, 1.5);
-        draw_fly();
-        glPopMatrix();
-        glPopMatrix();
-        glPopMatrix();
-    }
+    glPushMatrix();
+    glTranslatef(24.0, 3.0, 6.0);
+
+    glColor3f(0.2, 0.2, 0.95);
+    gluSphere(sphere, 0.75,   /* radius=1.5 */
+            12,            /* composing of 12 slices*/
+            12);           /* composing of 12 stacks */
+    /*------Draw three blades ---*/
+    glColor3f(0.8, 0.0, 1.0);
+    
+    glRotatef(bld_ang, 0.0, 0.0, 1.0);  /* Rotate about x axis, M5 coord. sys. */
+    glScalef(0.8,0.5,1);
+    draw_blade();/* draw the first blade */
+    
+    glRotatef(120.0, 0.0, 0.0, 1.0);    /* rotate by 120 degree, M6 coord. sys */
+    glScalef(0.8,0.5,1);
+    draw_blade();/* draw 2nd blade */
+    
+    glRotatef(120.0, 0.0, 0.0, 1.0);    /* rotate by 120 degree,M7 coord. sys */
+    glScalef(0.8,0.5,1);
+    draw_blade();/* draw 3rd blade */
+    glPopMatrix();
+
     /*---- Draw other parts. ---*/
     return;
 }
@@ -1064,73 +1064,20 @@ void my_quit(unsigned char key, int ix, int iy)
     /*--- Control the car. ----*/
     if (key == 'Q' || key == 'q') exit(0);
     if (key == 'a') {// 往左走
-        if (isKneeDown || isDance)return;
-        double tmp_ang = face_ang;
-        face_ang += 270;
-        if (face_ang > 360)face_ang -= 360;
-        goStraight();
-        face_ang = tmp_ang;
-        if (isRun)wave(15, 90);
-        else wave(5, 45);
-        if (isRun) little_wave(5, 0, -90);
-        else little_wave(5, 0, -45);
+        position[2] += Step*cos(face_ang*PI/180.0);
+        position[1] -= Step*sin(face_ang*PI/180.0);
     }
     else if (key == 'w') {// 往後走
-        if (isKneeDown || isDance)return;
-        if (face_ang >= 0 && face_ang <= 180) {
-            double a = sin(face_ang * PI / 180) * speed;
-            if (a < 0)a *= -1;
-            if (loc_x > 0 && notOb()) loc_x -= a;
-            if (!notOb())
-                while (loc_x <= 31)loc_x += a;
-        }
-        else {
-            double a = sin(face_ang * PI / 180) * speed;
-            if (a < 0)a *= -1;
-            if (loc_x < 49 && notOb()) loc_x += a;
-            if (!notOb())
-                while (loc_x >= 19)loc_x -= a;
-        }
-        if ((face_ang >= 0 && face_ang <= 90) || (face_ang >= 270 && face_ang <= 360)) {
-            double a = cos(face_ang * PI / 180) * speed;
-            if (a < 0)a *= -1;
-            if (loc_z > 0 && notOb()) loc_z -= a;
-            if (!notOb())
-                while (loc_z <= 31)loc_z += a;
-        }
-        else {
-            double a = cos(face_ang * PI / 180) * speed;
-            //printf("%f\n", a);
-            if (a < 0)a *= -1;
-            if (loc_z < 49 && notOb()) loc_z += a;
-            if (!notOb())
-                while (loc_z >= 19)loc_z -= a;
-        }
-        //printf("\n%f %f\n", loc_x, loc_z);
-        if (isRun)wave(15, 90);
-        else wave(5, 45);
-        if (isRun) little_wave(5, 0, -90);
-        else little_wave(5, 0, -45);
+        position[0] -= Step*cos(face_ang*PI/180.0);
+        position[2] += Step*sin(face_ang*PI/180.0);
     }
     else if (key == 'd') {// 往右走
-        if (isKneeDown || isDance)return;
-        double tmp_ang = face_ang;
-        face_ang += 90;
-        if (face_ang > 360)face_ang -= 360;
-        goStraight();
-        face_ang = tmp_ang;
-        if (isRun)wave(15, 90);
-        else wave(5, 45);
-        if (isRun) little_wave(5, 0, -90);
-        else little_wave(5, 0, -45);
+        position[2] -= Step*cos(face_ang*PI/180.0);
+        position[1] += Step*sin(face_ang*PI/180.0);
     }
     else if (key == 's') {// 往前走
-        if (isKneeDown || isDance)return;
-        goStraight();
-        if (isRun)wave(15, 90);
-        else wave(5, 45);
-        if (isRun) little_wave(5, 0, -90);
-        else little_wave(5, 0, -45);
+        position[0] += Step*cos(face_ang*PI/180.0);
+        position[2] -= Step*sin(face_ang*PI/180.0);
     }
     else if (key == 'r') {// 順時鐘轉
         face_ang -= 3;
@@ -1140,91 +1087,45 @@ void my_quit(unsigned char key, int ix, int iy)
         face_ang += 3;
         if (face_ang > 360)face_ang -= 360;
     }
-    else if (key == 'n') {// 蹲下
-        if (!isKneeDown) {
-            loc_y -= 2;
-            limb_ang = 90;
-            small_limb_ang = -90;
-            isKneeDown = 1;
-        }
-        else {
-            loc_y += 2;
-            limb_ang = 0;
-            small_limb_ang = 0;
-            isKneeDown = 0;
-        }
-    }
-    else if (key == 'D') {// dance
-        isDance = 1;
-        //dance();
-        //isDance = 0;
-    }
-    else if (key == 'f') {// fly
-        if (isKneeDown || isJump)return;
-        if (!isFly) {
-            isFly = 1;
-            loc_y = 10;
-            body_ang = 30;
-        }
-        else {
-            isFly = 0;
-            loc_y = 4;
-            body_ang = 0;
-        }
-    }
     else if (key == '+') {// add height when fly
-        if (isFly) {
-            if (loc_y < 49)loc_y++;
-        }
+        position[1] += Step*cos(face_ang*PI/180.0);
+        position[2] -= Step*sin(face_ang*PI/180.0);
+        engine+=1;
     }
     else if (key == '-') {// subn height when fly
-        if (isFly) {
-            if (loc_y > 11 && notOb())loc_y--;
+        if(engine == 0){
+            return;
+        }
+        else{
+            position[1] -= Step*cos(face_ang*PI/180.0);
+            position[2] += Step*sin(face_ang*PI/180.0);
+            engine-=1;
         }
     }
-    else if (key == 'W') {// space walk
-        if (isKneeDown || isDance)return;
-        isSpaceWalk = 1;
+    /*else if (key == 'E') {// 往右前走
+        face_ang -= 3;
+        if (face_ang < 0)face_ang += 360;
+        position[0] -= Step*cos(face_ang*PI/180.0);
+        position[2] += Step*sin(face_ang*PI/180.0);
     }
-    else if (key == 'R') {// run
-        isRun = 1;
+    else if (key == 'D') {// 往右後走
+        face_ang += 3;
+        if (face_ang > 360)face_ang -= 360;
+        position[0] += Step*cos(face_ang*PI/180.0);
+        position[2] -= Step*sin(face_ang*PI/180.0);
     }
-    else if (key == 'g') {// from walk to run
-        if (walk) {
-            walk = 0;
-            speed = 3;
-        }
-        else {
-            walk = 1;
-            speed = 0.5;
-        }
+    else if (key == 'W') {// 往左前走
+        face_ang += 3;
+        if (face_ang > 360)face_ang -= 360;
+        position[0] -= Step*cos(face_ang*PI/180.0);
+        position[2] += Step*sin(face_ang*PI/180.0);
     }
-    else if (key == 'S') {// stop from run & dance
-        isRun = 0;
-        isDance = 0;
-        isSpaceWalk = 0;
-        body_ang = 0;
-        limb_ang = 0;
-        small_limb_ang = 0;
-    }
-    else if (key == 32) {
-        if (isKneeDown)return;
-        loc_y -= 2;
-        limb_ang = 90;
-        small_limb_ang = -90;
-        isKneeDown = 1;
-        display();
-        isKneeDown = 0;
-        Sleep(300);
-        loc_y = 2;
-        limb_ang = 90;
-        small_limb_ang = -90;
-        display();
-        loc_y = 4;
-        limb_ang = 0;
-        small_limb_ang = 0;
-        isJump = 1;
-    }
+    else if (key == 'S') {// 往左後走
+        face_ang -= 3;
+        if (face_ang < 0)face_ang += 360;
+        position[0] += Step*cos(face_ang*PI/180.0);
+        position[2] -= Step*sin(face_ang*PI/180.0);
+    }*/
     /*------transform the EYE coordinate system ------*/
     else if (key == 'y') {
         eyeDy += 0.5;       /* move up */
@@ -1693,77 +1594,13 @@ void chanhe_spot_color() {
     glLightfv(GL_LIGHT3, GL_SPECULAR, lit3_specular);
 }
 void idle_func() {
-    if (isLight3) {
-        if (col1 < 1)col1 += 0.0001;
-        else col1 = 0;
-        if (col2 < 1)col2 += 0.0005;
-        else col2 = 0;
-        if (col3 < 1)col3 += 0.0007;
-        else col3 = 0;
-        lit3_diffuse[0] = col1;
-        lit3_diffuse[1] = col2;
-        lit3_diffuse[2] = col3;
-        lit3_specular[0] = col1;
-        lit3_specular[1] = col2;
-        lit3_specular[2] = col3;
-        spot_lit[0] = col1;
-        spot_lit[1] = col2;
-        spot_lit[2] = col3;
-        glLightfv(GL_LIGHT3, GL_DIFFUSE, lit3_diffuse);
-        glLightfv(GL_LIGHT3, GL_SPECULAR, lit3_specular);
-        display();
-    }
-    if (isSun) {
-        lit2_ang += 0.05;
-        display();
-    }
-    if (isRun) {
-        goStraight();
-        wave(1, 45);
-        little_wave(1, 0, -90);
-        display();
-    }
-    if (isDance) {
-        //if (limb_ang > 360)limb_ang -= 360;
-        //limb_ang += 1;
-        wave(0.2, 90);
-        little_wave(0.2, 0, -45);
-        body_wave(0.2);
-        display();
-    }
-    if (isSpaceWalk) {
-        wave(0.3, 45);
-        little_wave(0.3, 0, -45);
-        display();
-    }
-    if (isJump) {
-        wave(0.5, 45);
-        little_wave(0.5, 0, -90);
-        if (jump_mode)loc_y += 0.2;
-        else loc_y -= 0.2;
-        if (loc_y >= 30)jump_mode = 0;
-        else if (loc_y <= 4)jump_mode = 1;
-        display();
-        if (loc_y <= 4) {
-            isJump = 0;
-            loc_y -= 2;
-            limb_ang = 90;
-            small_limb_ang = -90;
-            isKneeDown = 1;
-            display();
-            Sleep(300);
-            isKneeDown = 0;
-            loc_y += 2;
-            limb_ang = 0;
-            small_limb_ang = 0;
-            display();
+    if (engine > 0){
+        bld_ang += 5.0;
+        if(bld_ang>360.0){
+            bld_ang -= 360.0;
         }
     }
-    if (isFly) {
-        fly_wave(0.3);
-        display();
-        //printf("%f", fly_ang);
-    }
+    display(); /* show the scene again */
 }
 /*---------------------------------------------------
  * Main procedure which defines the graphics environment,
